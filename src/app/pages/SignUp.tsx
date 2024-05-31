@@ -5,12 +5,17 @@ import CustomBox from '../components/CustomBox';
 import {GestureHandlerRootView, TextInput} from 'react-native-gesture-handler';
 import {Button, ButtonText} from '@gluestack-ui/themed';
 
-const SignUp = () => {
+const SignUp = ({navigation}) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  
+  const navigateToLoginScreen = () => {
+    console.log("Submitted from sign up");
+    navigation.navigate('Login', {name: 'Login'})
+  }
 
   return (
     <GestureHandlerRootView style={{flex: 1}}>
@@ -56,7 +61,7 @@ const SignUp = () => {
             keyboardType="phone-pad"
           />
         </CustomBox>
-        <Button onPressIn={() => alert('pressed')} style={styles.button}>
+        <Button onPressIn={() => navigateToLoginScreen()} style={styles.button}>
             <CustomBox style={buttonBox}>
                 <CustomText style={{textAlign: 'center'}}>Submit</CustomText>
             </CustomBox>

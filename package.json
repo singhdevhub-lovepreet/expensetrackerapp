@@ -13,6 +13,7 @@
     "@gluestack-style/react": "^1.0.54",
     "@gluestack-ui/config": "^1.1.18",
     "@gluestack-ui/themed": "^1.1.22",
+    "@react-native-community/cli-platform-ios": "^13.6.6",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "^6.9.26",
     "metro-react-native-babel-preset": "^0.77.0",
