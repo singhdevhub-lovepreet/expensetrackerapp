@@ -1,13 +1,70 @@
 import {View, Text, StyleSheet} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import CustomText from '../components/CustomText';
 import CustomBox from '../components/CustomBox';
 import {GestureHandlerRootView, TextInput} from 'react-native-gesture-handler';
 import {Button, ButtonText} from '@gluestack-ui/themed';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Login = () => {
+const Login = ({navigation}) => {
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  const isLoggedIn = async () => {
+    const accessToken = await AsyncStorage.getItem('accessToken');
+    const response = await fetch('http://localhost:9898/ping', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + accessToken
+      }
+    });
+  
+    return response.ok;
+  };
+
+  const refreshToken = async () => {
+    const refreshToken = await AsyncStorage.getItem('refreshToken');
+    const response = await fetch('http://localhost:9898/auth/v1/refreshToken', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      body: JSON.stringify({
+        'token': refreshToken
+      }),
+    });
+  
+    if (response.ok) {
+      const data = await response.json();
+      await AsyncStorage.setItem('refreshToken', data["refresh_token"]);
+      await AsyncStorage.setItem('accessToken', data["token"]);
+    }
+  
+    return response.ok;
+  };
+
+  useEffect(() => {
+    const handleLogin = async () => {
+      const loggedIn = await isLoggedIn();
+      setLoggedIn(loggedIn);
+      if (loggedIn) {
+        navigation.navigate('Home', {name: 'Home'});
+      } else {
+        const refreshed = await refreshToken();
+        setLoggedIn(refreshed);
+        if (refreshed) {
+          setLoggedIn(refreshed);
+          navigation.navigate('Home', {name: 'Home'});
+        }
+      }
+    };
+    handleLogin();
+  }, []);
 
   return (
     <GestureHandlerRootView style={{flex: 1}}>

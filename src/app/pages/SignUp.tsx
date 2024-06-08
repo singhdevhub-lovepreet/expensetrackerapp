@@ -4,18 +4,48 @@ import CustomText from '../components/CustomText';
 import CustomBox from '../components/CustomBox';
 import {GestureHandlerRootView, TextInput} from 'react-native-gesture-handler';
 import {Button, ButtonText} from '@gluestack-ui/themed';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const SignUp = ({navigation}) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
+  const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   
-  const navigateToLoginScreen = () => {
-    console.log("Submitted from sign up");
-    navigation.navigate('Login', {name: 'Login'})
-  }
+  const navigateToLoginScreen = async () => {
+    try {
+      const response = await fetch('http://localhost:9898/auth/v1/signup', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+          'first_name': firstName,
+          'last_name': lastName,
+          'email': email,
+          'phone_number': phoneNumber,
+          'password': password,
+          'username': userName
+        }),
+      });
+  
+      const data = await response.json();
+      console.log(data);
+      console.log(data["accessToken"]);
+      console.log(data["token"]);
+      await AsyncStorage.setItem('accessToken', data["accessToken"]);
+      await AsyncStorage.setItem('refreshToken', data["token"]);
+  
+      navigation.navigate('Login', {name: 'Login'});
+    } catch (error) {
+      console.error('Error during sign up:', error);
+    }
+  };
 
   return (
     <GestureHandlerRootView style={{flex: 1}}>
@@ -33,6 +63,13 @@ const SignUp = ({navigation}) => {
             placeholder="Last Name"
             value={lastName}
             onChangeText={text => setLastName(text)}
+            style={styles.textInput}
+            placeholderTextColor="#888"
+          />
+                <TextInput
+            placeholder="User Name"
+            value={userName}
+            onChangeText={text => setUserName(text)}
             style={styles.textInput}
             placeholderTextColor="#888"
           />

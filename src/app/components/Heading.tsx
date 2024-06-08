@@ -8,7 +8,7 @@ const Heading = () => {
   return (
     <View>
       <CustomBox style={headingBox}>
-        Your Recent Spends
+        <CustomText style={{}}>Your Recent Spends</CustomText>
       </CustomBox>
     </View>
   );
