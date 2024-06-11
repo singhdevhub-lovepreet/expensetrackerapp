@@ -41,11 +41,15 @@ const SignUp = ({navigation}) => {
       await AsyncStorage.setItem('accessToken', data["accessToken"]);
       await AsyncStorage.setItem('refreshToken', data["token"]);
   
-      navigation.navigate('Login', {name: 'Login'});
+      navigation.navigate('Home', {name: 'Home'});
     } catch (error) {
       console.error('Error during sign up:', error);
     }
   };
+
+  const gotLoginWithoutValidation = ()=>{
+    navigation.navigate('Login', {name: 'Login'}); 
+  }
 
   return (
     <GestureHandlerRootView style={{flex: 1}}>
@@ -100,7 +104,12 @@ const SignUp = ({navigation}) => {
         </CustomBox>
         <Button onPressIn={() => navigateToLoginScreen()} style={styles.button}>
             <CustomBox style={buttonBox}>
-                <CustomText style={{textAlign: 'center'}}>Submit</CustomText>
+                <CustomText style={{textAlign: 'center'}}>Sign Up</CustomText>
+            </CustomBox>
+          </Button>
+          <Button onPressIn={() => gotLoginWithoutValidation()} style={styles.button}>
+            <CustomBox style={buttonBox}>
+                <CustomText style={{textAlign: 'center'}}>Login</CustomText>
             </CustomBox>
           </Button>
       </View>

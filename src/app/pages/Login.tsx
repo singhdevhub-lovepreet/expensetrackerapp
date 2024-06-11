@@ -12,13 +12,16 @@ const Login = ({navigation}) => {
   const [loggedIn, setLoggedIn] = useState(false);
 
   const isLoggedIn = async () => {
+    console.log("Inside login");
     const accessToken = await AsyncStorage.getItem('accessToken');
+    console.log("Token is "+ accessToken);
     const response = await fetch('http://localhost:9898/ping', {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': "Bearer " + accessToken
+        'Authorization': "Bearer " + accessToken,
+        'X-Requested-With': 'XMLHttpRequest'
       }
     });
   
@@ -26,6 +29,7 @@ const Login = ({navigation}) => {
   };
 
   const refreshToken = async () => {
+    console.log("Inside Refresh token")
     const refreshToken = await AsyncStorage.getItem('refreshToken');
     const response = await fetch('http://localhost:9898/auth/v1/refreshToken', {
       method: 'POST',
@@ -41,12 +45,42 @@ const Login = ({navigation}) => {
   
     if (response.ok) {
       const data = await response.json();
-      await AsyncStorage.setItem('refreshToken', data["refresh_token"]);
-      await AsyncStorage.setItem('accessToken', data["token"]);
+      await AsyncStorage.setItem('accessToken', data["accessToken"]);
+      await AsyncStorage.setItem('refreshToken', data["token"]);
+      const refreshToken = await AsyncStorage.getItem('refreshToken');
+      const accessToken = await AsyncStorage.getItem('accessToken');
+      console.log("Tokens after refresh are "+ refreshToken + " "+ accessToken);
     }
   
     return response.ok;
   };
+
+  const gotoHomePageWithLogin = async()=>{
+    const response = await fetch("http://localhost:9898/auth/v1/login",
+      {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest' 
+        },
+        body: JSON.stringify({
+            "username": userName,
+            "password": password
+        })
+      }
+    );
+    if(response.ok){
+      const data = await response.json();
+      await AsyncStorage.setItem('refreshToken', data["token"]);
+      await AsyncStorage.setItem('accessToken', data["accessToken"]);
+      navigation.navigate('Home', {name: 'Home'});
+    }
+  }
+
+  const gotoSignup = ()=>{
+    navigation.navigate('SignUp', {name: 'SignUp'}); 
+  }
 
   useEffect(() => {
     const handleLogin = async () => {
@@ -87,9 +121,14 @@ const Login = ({navigation}) => {
             secureTextEntry
           />
         </CustomBox>
-        <Button onPressIn={() => alert('pressed')} style={styles.button}>
+        <Button onPressIn={() => gotoHomePageWithLogin()} style={styles.button}>
             <CustomBox style={buttonBox}>
                 <CustomText style={{textAlign: 'center'}}>Submit</CustomText>
+            </CustomBox>
+          </Button>
+          <Button onPressIn={() => gotoSignup()} style={styles.button}>
+            <CustomBox style={buttonBox}>
+                <CustomText style={{textAlign: 'center'}}>Goto Signup</CustomText>
             </CustomBox>
           </Button>
       </View>
