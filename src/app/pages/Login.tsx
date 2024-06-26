@@ -12,75 +12,75 @@ const Login = ({navigation}) => {
   const [loggedIn, setLoggedIn] = useState(false);
 
   const isLoggedIn = async () => {
-    console.log("Inside login");
+    console.log('Inside login');
     const accessToken = await AsyncStorage.getItem('accessToken');
-    console.log("Token is "+ accessToken);
+    console.log('Token is ' + accessToken);
     const response = await fetch('http://localhost:9898/ping', {
       method: 'GET',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': "Bearer " + accessToken,
-        'X-Requested-With': 'XMLHttpRequest'
-      }
+        Authorization: 'Bearer ' + accessToken,
+        'X-Requested-With': 'XMLHttpRequest',
+      },
     });
-  
+
     return response.ok;
   };
 
   const refreshToken = async () => {
-    console.log("Inside Refresh token")
+    console.log('Inside Refresh token');
     const refreshToken = await AsyncStorage.getItem('refreshToken');
     const response = await fetch('http://localhost:9898/auth/v1/refreshToken', {
       method: 'POST',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest'
+        'X-Requested-With': 'XMLHttpRequest',
       },
       body: JSON.stringify({
-        'token': refreshToken
+        token: refreshToken,
       }),
     });
-  
+
     if (response.ok) {
       const data = await response.json();
-      await AsyncStorage.setItem('accessToken', data["accessToken"]);
-      await AsyncStorage.setItem('refreshToken', data["token"]);
+      await AsyncStorage.setItem('accessToken', data['accessToken']);
+      await AsyncStorage.setItem('refreshToken', data['token']);
       const refreshToken = await AsyncStorage.getItem('refreshToken');
       const accessToken = await AsyncStorage.getItem('accessToken');
-      console.log("Tokens after refresh are "+ refreshToken + " "+ accessToken);
+      console.log(
+        'Tokens after refresh are ' + refreshToken + ' ' + accessToken,
+      );
     }
-  
+
     return response.ok;
   };
 
-  const gotoHomePageWithLogin = async()=>{
-    const response = await fetch("http://localhost:9898/auth/v1/login",
-      {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest' 
-        },
-        body: JSON.stringify({
-            "username": userName,
-            "password": password
-        })
-      }
-    );
-    if(response.ok){
+  const gotoHomePageWithLogin = async () => {
+    const response = await fetch('http://localhost:9898/auth/v1/login', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+      body: JSON.stringify({
+        username: userName,
+        password: password,
+      }),
+    });
+    if (response.ok) {
       const data = await response.json();
-      await AsyncStorage.setItem('refreshToken', data["token"]);
-      await AsyncStorage.setItem('accessToken', data["accessToken"]);
+      await AsyncStorage.setItem('refreshToken', data['token']);
+      await AsyncStorage.setItem('accessToken', data['accessToken']);
       navigation.navigate('Home', {name: 'Home'});
     }
-  }
+  };
 
-  const gotoSignup = ()=>{
-    navigation.navigate('SignUp', {name: 'SignUp'}); 
-  }
+  const gotoSignup = () => {
+    navigation.navigate('SignUp', {name: 'SignUp'});
+  };
 
   useEffect(() => {
     const handleLogin = async () => {
@@ -122,15 +122,15 @@ const Login = ({navigation}) => {
           />
         </CustomBox>
         <Button onPressIn={() => gotoHomePageWithLogin()} style={styles.button}>
-            <CustomBox style={buttonBox}>
-                <CustomText style={{textAlign: 'center'}}>Submit</CustomText>
-            </CustomBox>
-          </Button>
-          <Button onPressIn={() => gotoSignup()} style={styles.button}>
-            <CustomBox style={buttonBox}>
-                <CustomText style={{textAlign: 'center'}}>Goto Signup</CustomText>
-            </CustomBox>
-          </Button>
+          <CustomBox style={buttonBox}>
+            <CustomText style={{textAlign: 'center'}}>Submit</CustomText>
+          </CustomBox>
+        </Button>
+        <Button onPressIn={() => gotoSignup()} style={styles.button}>
+          <CustomBox style={buttonBox}>
+            <CustomText style={{textAlign: 'center'}}>Goto Signup</CustomText>
+          </CustomBox>
+        </Button>
       </View>
     </GestureHandlerRootView>
   );
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 20,
-    width: "30%",
+    width: '30%',
   },
   heading: {
     fontSize: 24,
@@ -185,11 +185,9 @@ const buttonBox = {
     borderWidth: 1,
     borderRadius: 10,
     padding: 10,
-    
   },
   shadowBox: {
     backgroundColor: 'gray',
     borderRadius: 10,
   },
 };
-
