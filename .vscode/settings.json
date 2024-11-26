@@ -1,3 +1,12 @@
 {
-    "java.compile.nullAnalysis.mode": "automatic"
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.configuration.updateBuildConfiguration": "interactive",
+    
+        "vscode-neovim.neovimExecutablePaths.darwin": "/opt/homebrew/bin/nvim",
+        "vscode-neovim.neovimInitVimPaths.darwin": "~/.config/nvim/init.lua",
+        "editor.scrollBeyondLastLine": false,
+        "keyboard.dispatch": "keyCode",
+        "vscode-neovim.useCtrlKeysForInsertMode": true,
+        "vscode-neovim.useCtrlKeysForNormalMode": true
+    
 }

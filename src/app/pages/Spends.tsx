@@ -3,23 +3,23 @@ import React from 'react';
 import Heading from '../components/Heading';
 import Expense from '../components/Expense';
 import CustomBox from '../components/CustomBox';
+import { ExpenseDto } from './dto/ExpenseDto';
 
 const Spends = () => {
-  const expenses = [
+  const expenses: ExpenseDto[] = [
     {
-      id: '1',
-      amount: '150 Rs',
-      merchant: 'Third Wave Coffee',
-    },
-    {
-      id: '2',
-      amount: '250 Rs',
+      key: 1,
+      amount: 100,
       merchant: 'Amazon',
+      currency: 'USD',
+      createdAt: new Date(),
     },
     {
-      id: '3',
-      amount: '80 Rs',
-      merchant: 'Uber Eats',
+      key: 2,
+      amount: 50,
+      merchant: 'Flipkart',
+      currency: 'INR',
+      createdAt: new Date(),
     },
   ];
 

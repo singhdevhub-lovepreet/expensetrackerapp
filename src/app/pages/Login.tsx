@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const Login = ({navigation}) => {
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(true);
 
   const isLoggedIn = async () => {
     console.log('Inside login');
@@ -84,8 +84,8 @@ const Login = ({navigation}) => {
 
   useEffect(() => {
     const handleLogin = async () => {
-      const loggedIn = await isLoggedIn();
-      setLoggedIn(loggedIn);
+      // const loggedIn = await isLoggedIn();
+      // setLoggedIn(loggedIn);
       if (loggedIn) {
         navigation.navigate('Home', {name: 'Home'});
       } else {

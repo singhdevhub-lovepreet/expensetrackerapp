@@ -2,11 +2,11 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug iOS - Experimental",
+      "name": "Debug android",
       "request": "launch",
       "type": "reactnative",
       "cwd": "${workspaceFolder}",
-      "platform": "ios"
+      "platform": "android"
     }
   ]
 }
