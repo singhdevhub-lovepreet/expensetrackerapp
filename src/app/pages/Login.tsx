@@ -5,33 +5,19 @@ import CustomBox from '../components/CustomBox';
 import {GestureHandlerRootView, TextInput} from 'react-native-gesture-handler';
 import {Button, ButtonText} from '@gluestack-ui/themed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {SERVER_BASE_URL} from "react-native-dotenv";
+import LoginService from '../api/LoginService';
 
 const Login = ({navigation}) => {
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [loggedIn, setLoggedIn] = useState(true);
-
-  const isLoggedIn = async () => {
-    console.log('Inside login');
-    const accessToken = await AsyncStorage.getItem('accessToken');
-    console.log('Token is ' + accessToken);
-    const response = await fetch('http://localhost:9898/ping', {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + accessToken,
-        'X-Requested-With': 'XMLHttpRequest',
-      },
-    });
-
-    return response.ok;
-  };
+  const loginService = new LoginService();
 
   const refreshToken = async () => {
     console.log('Inside Refresh token');
     const refreshToken = await AsyncStorage.getItem('refreshToken');
-    const response = await fetch('http://localhost:9898/auth/v1/refreshToken', {
+    const response = await fetch(`${SERVER_BASE_URL}/auth/v1/refreshToken`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -58,7 +44,7 @@ const Login = ({navigation}) => {
   };
 
   const gotoHomePageWithLogin = async () => {
-    const response = await fetch('http://localhost:9898/auth/v1/login', {
+    const response = await fetch(`${SERVER_BASE_URL}/auth/v1/login`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -84,8 +70,8 @@ const Login = ({navigation}) => {
 
   useEffect(() => {
     const handleLogin = async () => {
-      // const loggedIn = await isLoggedIn();
-      // setLoggedIn(loggedIn);
+      const loggedIn = await loginService.isLoggedIn();
+      setLoggedIn(loggedIn);
       if (loggedIn) {
         navigation.navigate('Home', {name: 'Home'});
       } else {
