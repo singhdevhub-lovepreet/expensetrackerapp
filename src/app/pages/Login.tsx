@@ -5,7 +5,6 @@ import CustomBox from '../components/CustomBox';
 import {GestureHandlerRootView, TextInput} from 'react-native-gesture-handler';
 import {Button, ButtonText} from '@gluestack-ui/themed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {SERVER_BASE_URL} from "react-native-dotenv";
 import LoginService from '../api/LoginService';
 
 const Login = ({navigation}) => {
@@ -15,6 +14,7 @@ const Login = ({navigation}) => {
   const loginService = new LoginService();
 
   const refreshToken = async () => {
+    const SERVER_BASE_URL = "http://Expens-KongA-ChasZNdaOM4K-1208155051.ap-south-1.elb.amazonaws.com";
     console.log('Inside Refresh token');
     const refreshToken = await AsyncStorage.getItem('refreshToken');
     const response = await fetch(`${SERVER_BASE_URL}/auth/v1/refreshToken`, {
@@ -44,6 +44,7 @@ const Login = ({navigation}) => {
   };
 
   const gotoHomePageWithLogin = async () => {
+    const SERVER_BASE_URL = "http://Expens-KongA-ChasZNdaOM4K-1208155051.ap-south-1.elb.amazonaws.com";
     const response = await fetch(`${SERVER_BASE_URL}/auth/v1/login`, {
       method: 'POST',
       headers: {

@@ -3,10 +3,9 @@ import { View, StyleSheet } from 'react-native';
 import Heading from '../components/Heading';
 import Expense from '../components/Expense';
 import CustomBox from '../components/CustomBox';
-import { ExpenseDto } from './dto/ExpenseDto';
-import {SERVER_BASE_URL} from "react-native-dotenv";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomText from '../components/CustomText';
+import {ExpenseDto} from '../pages/dto/ExpenseDto';
 
 const Spends = () => {
   const [expenses, setExpenses] = useState<ExpenseDto[]>([]);
@@ -19,33 +18,46 @@ const Spends = () => {
 
   const fetchExpenses = async () => {
     try {
+      const SERVER_BASE_URL = "http://Expens-KongA-ChasZNdaOM4K-1208155051.ap-south-1.elb.amazonaws.com";
       const accessToken = await AsyncStorage.getItem('accessToken');
+
+      if (!accessToken) {
+        throw new Error('No access token found.');
+      }
+
       const response = await fetch(`${SERVER_BASE_URL}/expense/v1/getExpense`, {
         method: 'GET',
         headers: {
           'X-Requested-With': 'XMLHttpRequest',
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + accessToken,
-        }
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
 
+      console.log('Token is:', accessToken);
+
       if (!response.ok) {
-        throw new Error('Failed to fetch expenses');
+        throw new Error(`Failed to fetch expenses. Status: ${response.status}`);
       }
 
       const data = await response.json();
+      console.log('Expenses fetched:', data);
+
       const transformedExpenses: ExpenseDto[] = data.map((expense: any, index: number) => ({
         key: index + 1,
-        amount: expense.amount,
-        merchant: expense.merchant,
-        currency: expense.currency,
-        createdAt: new Date()
+        amount: expense["amount"],
+        merchant: expense["merchant"],
+        currency: expense["currency"],
+        createdAt: new Date(expense["created_at"]),
       }));
+      console.log("Transformed expenses:", transformedExpenses);
 
       setExpenses(transformedExpenses);
       setIsLoading(false);
+      setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unknown error occurred');
+      console.error('Error fetching expenses:', err);
       setIsLoading(false);
     }
   };
@@ -55,7 +67,6 @@ const Spends = () => {
       <View>
         <Heading props={{ heading: 'spends' }} />
         <CustomBox style={headingBox}>
-          {/* You might want to create a Loading component */}
           <CustomText style={{}}>Loading expenses...</CustomText>
         </CustomBox>
       </View>
@@ -67,7 +78,7 @@ const Spends = () => {
       <View>
         <Heading props={{ heading: 'spends' }} />
         <CustomBox style={headingBox}>
-          <CustomText style={{}}>Error</CustomText>
+          <CustomText style={{}}>Error: {error}</CustomText>
         </CustomBox>
       </View>
     );
@@ -107,7 +118,7 @@ const headingBox = {
   shadowBox: {
     backgroundColor: 'gray',
   },
-  styles:{
-    marginTop: 20
-  }
+  styles: {
+    marginTop: 20,
+  },
 };

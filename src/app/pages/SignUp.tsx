@@ -5,7 +5,6 @@ import CustomBox from '../components/CustomBox';
 import {GestureHandlerRootView, TextInput} from 'react-native-gesture-handler';
 import {Button, ButtonText} from '@gluestack-ui/themed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {SERVER_BASE_URL} from "react-native-dotenv";
 
 const SignUp = ({navigation}) => {
   const [firstName, setFirstName] = useState('');
@@ -17,6 +16,7 @@ const SignUp = ({navigation}) => {
   
   const navigateToLoginScreen = async () => {
     try {
+      const SERVER_BASE_URL = "http://Expens-KongA-ChasZNdaOM4K-1208155051.ap-south-1.elb.amazonaws.com";
       const response = await fetch(`${SERVER_BASE_URL}/auth/v1/signup`, {
         method: 'POST',
         headers: {
