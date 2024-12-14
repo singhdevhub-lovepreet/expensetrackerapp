@@ -5,7 +5,7 @@ class LoginService {
     constructor() {}
 
     async isLoggedIn(){
-        const SERVER_BASE_URL = "http://Expens-KongA-ChasZNdaOM4K-1208155051.ap-south-1.elb.amazonaws.com";
+        const SERVER_BASE_URL = "http://Expens-KongA-B7tlVsbseCGj-466007081.ap-south-1.elb.amazonaws.com";
         console.log('Inside login');
         const accessToken = await AsyncStorage.getItem('accessToken');
         console.log('Token is ' + accessToken);
