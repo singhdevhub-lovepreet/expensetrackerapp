@@ -14,9 +14,10 @@ const Login = ({navigation}) => {
   const loginService = new LoginService();
 
   const refreshToken = async () => {
-    const SERVER_BASE_URL = "http://Expens-KongA-ChasZNdaOM4K-1208155051.ap-south-1.elb.amazonaws.com";
+    const SERVER_BASE_URL = "http://Expens-KongA-B7tlVsbseCGj-466007081.ap-south-1.elb.amazonaws.com";
     console.log('Inside Refresh token');
     const refreshToken = await AsyncStorage.getItem('refreshToken');
+    console.log('Refresh token is ' + refreshToken); 
     const response = await fetch(`${SERVER_BASE_URL}/auth/v1/refreshToken`, {
       method: 'POST',
       headers: {
@@ -28,7 +29,7 @@ const Login = ({navigation}) => {
         token: refreshToken,
       }),
     });
-
+    console.log("Refresh token response is " + response.text());
     if (response.ok) {
       const data = await response.json();
       await AsyncStorage.setItem('accessToken', data['accessToken']);
@@ -44,7 +45,7 @@ const Login = ({navigation}) => {
   };
 
   const gotoHomePageWithLogin = async () => {
-    const SERVER_BASE_URL = "http://Expens-KongA-ChasZNdaOM4K-1208155051.ap-south-1.elb.amazonaws.com";
+    const SERVER_BASE_URL = "http://Expens-KongA-B7tlVsbseCGj-466007081.ap-south-1.elb.amazonaws.com";
     const response = await fetch(`${SERVER_BASE_URL}/auth/v1/login`, {
       method: 'POST',
       headers: {
@@ -72,12 +73,12 @@ const Login = ({navigation}) => {
   useEffect(() => {
     const handleLogin = async () => {
       const loggedIn = await loginService.isLoggedIn();
-      setLoggedIn(loggedIn);
+      await setLoggedIn(loggedIn);
       if (loggedIn) {
         navigation.navigate('Home', {name: 'Home'});
       } else {
         const refreshed = await refreshToken();
-        setLoggedIn(refreshed);
+        await setLoggedIn(refreshed);
         if (refreshed) {
           setLoggedIn(refreshed);
           navigation.navigate('Home', {name: 'Home'});
